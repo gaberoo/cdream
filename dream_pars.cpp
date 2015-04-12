@@ -33,6 +33,7 @@ void dream_pars_init_vars(dream_pars* p, size_t n) {
   p->varInit = (double*) calloc(n,sizeof(double));
   p->varLock = (int*) calloc(n,sizeof(int));
   p->varName = new string[n];
+  p->scale = new char[n];
 }
 
 void dream_pars_free_vars(dream_pars* p) {
@@ -41,92 +42,115 @@ void dream_pars_free_vars(dream_pars* p) {
   free(p->varInit);
   free(p->varLock);
   delete[] p->varName;
+  delete[] p->scale;
   p->nvar = 0;
   p->nfree = 0;
 }
 
-// jpars.Parse<0>(json_input.c_str());
-// assert(jpars.IsObject());
-void dream_pars_read_json(dream_pars* p, rapidjson::Document& jpars) {
-  /* Reading priors from JSON */
+void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
+  // reading priors from JSON
   rapidjson::Value::MemberIterator m1;
   rapidjson::SizeType _rj; 
 
   // find variable ranges
-  rapidjson::Value::MemberIterator _d = jpars.FindMember("vars");
-  assert(_d != jpars.MemberEnd());
+  rapidjson::Value::MemberIterator _d = jpars.FindMember("pars");
+  if (_d == jpars.MemberEnd()) throw "pars";
 
   rapidjson::Value& d = _d->value;
   dream_pars_init_vars(p,d.Size());
 
-  // get names
-  map<string,int> nameMap;
+  // variables
   for (rapidjson::SizeType i = 0; i < d.Size(); ++i) {
-    rapidjson::Value& a = d[i];
-    m1 = a.FindMember("name"); 
-    if (m1 != jpars.MemberEnd()) {
-      assert(m1->value.IsString());
-      p->varName[i] = m1->value.GetString();
-      nameMap.insert(make_pair(p->varName[i],i));
+    m1 = d[i].FindMember("name"); 
+    if (m1 != d[i].MemberEnd()) {
+      if (! m1->value.IsString()) throw "Bad varible name.";
+      else p->varName[i] = m1->value.GetString();
     }
-  }
 
-  for (rapidjson::SizeType i = 0; i < d.Size(); ++i) {
-    rapidjson::Value& a = d[i];
-
-    m1 = a.FindMember("limits"); 
-    if (m1 != jpars.MemberEnd()) {
-      assert(m1->value.IsArray());
-      assert(m1->value.Size() == 2);
+    m1 = d[i].FindMember("limits"); 
+    if (m1 != d[i].MemberEnd()) {
+      if (! m1->value.IsArray()) throw "Bad variables limits.";
+      if (! m1->value.Size() == 2) throw "Bad variables limits.";
       _rj = 0; p->varLo[i] = m1->value[_rj].GetDouble();
       _rj = 1; p->varHi[i] = m1->value[_rj].GetDouble();
     }
 
-    m1 = a.FindMember("lock");
-    if (m1 != jpars.MemberEnd()) {
-      assert(m1->value.IsBool());
-      p->varLock[i] = m1->value.GetBool();
-      if (p->varLock[i]) --(p->nfree);
+    m1 = d[i].FindMember("lock");
+    if (m1 != d[i].MemberEnd()) {
+      if (! m1->value.IsDouble()) {
+        throw "Locked variable isn't a double.";
+      } else {
+        p->varLock[i] = 1;
+        p->varLo[i] = p->varHi[i] = m1->value.GetDouble();
+        --(p->nfree);
+      }
     }
 
-    m1 = a.FindMember("fixed_to");
-    if (m1 != jpars.MemberEnd()) {
-      p->varLo[i] = m1->value.GetDouble();
-      p->varHi[i] = m1->value.GetDouble();
+    m1 = d[i].FindMember("scale");
+    if (m1 != d[i].MemberEnd()) {
+      if (! m1->value.IsString()) throw "Bad scale.";
+      p->scale[i] = m1->value.GetString()[0];
+    } else {
+      p->scale[i] = 'n';
     }
   }
 
   p->deltaMax = (p->nfree-1)/2;
 
-  m1 = jpars.FindMember("prefix");
-  if (m1 != jpars.MemberEnd()) {
-    assert(m1->value.IsString());
+  rapidjson::Value::MemberIterator dream = jpars.FindMember("dream");
+  if (dream == jpars.MemberEnd()) throw "No dream section in JSON.";
+
+  rapidjson::Value& dv = dream->value;
+
+  m1 = dv.FindMember("prefix");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsString()) throw "prefix";
     p->out_fn = m1->value.GetString();
   }
 
-  m1 = jpars.FindMember("num_chains");
-  if (m1 != jpars.MemberEnd()) {
-    assert(m1->value.IsInt());
+  m1 = dv.FindMember("num_chains");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsInt()) throw "num_chains";
     p->numChains = m1->value.GetInt();
   }
 
-  m1 = jpars.FindMember("max_evals");
-  if (m1 != jpars.MemberEnd()) {
-    assert(m1->value.IsInt());
+  m1 = dv.FindMember("max_evals");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsInt()) throw "max_evals";
     p->maxEvals = m1->value.GetInt();
   }
 
-  m1 = jpars.FindMember("burn_in");
-  if (m1 != jpars.MemberEnd()) {
-    assert(m1->value.IsInt());
+  m1 = dv.FindMember("burn_in");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsInt()) throw "burn_in";
     p->burnIn = m1->value.GetInt();
   }
 
-  m1 = jpars.FindMember("gelman_evals");
-  if (m1 != jpars.MemberEnd()) {
-    assert(m1->value.IsInt());
+  m1 = dv.FindMember("gelman_evals");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsInt()) throw "gelman_evals";
     p->gelmanEvals = m1->value.GetInt();
   }
 
+  m1 = dv.FindMember("vflag");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsInt()) throw "vflag";
+    p->vflag = m1->value.GetInt();
+  }
+
+  m1 = dv.FindMember("noise");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsDouble()) throw "noise";
+    p->noise = m1->value.GetDouble();
+  }
+}
+
+size_t dream_par_by_name(const dream_pars* p, string name) {
+  size_t i = 0;
+  while (i < p->nvar) {
+    if (p->varName[i] == name) break;
+    ++i;
+  }
+  return i;
 }
 

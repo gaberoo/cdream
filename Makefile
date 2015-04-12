@@ -1,13 +1,14 @@
 CC = gcc
 CPP = g++
 
-CFLAGS = -O3 -Iinclude
+CFLAGS = -m64 -O3 -Iinclude
 CPPFLAGS = $(CFLAGS)
 
 LDFLAGS = -lgsl
 
 OBJ = check_outliers.o gelman_rubin.o gen_CR.o \
-			restore_state.o dream_initialize.o dream.o dream_pars.o
+			restore_state.o dream_initialize.o dream.o \
+			dream_pars.o
 
 dream.a: $(OBJ)
 	ar rcs dream.a $(OBJ)

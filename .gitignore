@@ -1,0 +1,4 @@
+*.o
+dream.a
+test.*.txt
+test_dream

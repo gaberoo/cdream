@@ -55,8 +55,9 @@ void dream_initialize(
       }
     }
     if (do_calc) {
+      if (p->vflag) cout << "Chain " << i << " likelihood = " << flush;
       lik[i] = p->fun(state.col_pt(i),p->funPars);
-      if (p->vflag) cout << "Chain " << i << " likelihood = " << lik[i] << endl;
+      if (p->vflag) cout << lik[i] << endl;
     } else lik[i] = -INFINITY;
   }
 

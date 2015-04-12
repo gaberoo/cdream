@@ -1,0 +1,16 @@
+{
+  "pars": [
+    { "name": "X1", "limits": [-2.0,2.0] },
+    { "name": "X2", "limits": [-2.0,2.0] },
+    { "name": "X3", "lock": 0.0 }
+  ],
+  "dream": {
+    "prefix": "test",
+    "num_chains": 5,
+    "max_evals": 20000,
+    "burn_in": 2000,
+    "gelman_evals": 1000,
+    "noise": 0.01,
+    "vflag": 1
+  }
+}

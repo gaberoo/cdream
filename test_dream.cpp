@@ -1,9 +1,12 @@
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 #include "dream.h"
 #include <rng/GSLStream.h>
+
+#include <rapidjson/document.h>
 
 typedef struct {
   double a[10];
@@ -17,34 +20,36 @@ double f(const double* state, const void* pars) {
 }
 
 int main() {
-  size_t n = 10;
+  ifstream in("test.json");
+  string json_input;
+  in.seekg(0,ios::end);
+  json_input.reserve(in.tellg());
+  in.seekg(0,ios::beg);
+  json_input.assign(istreambuf_iterator<char>(in), 
+                    istreambuf_iterator<char>());
 
+  rapidjson::Document jpars;
   dream_pars p;
   dream_pars_default(&p);
-  dream_pars_init_vars(&p,n);
+
+  try {
+    jpars.Parse<0>(json_input.c_str());
+    if (! jpars.IsObject()) throw 10;
+    dream_pars_read_json(&p,jpars);
+  } catch (int e) {
+    cerr << "Coudln't create JSON document:" << endl;
+    cerr << json_input << endl;
+  } catch (const char* str) {
+    cerr << "JSON exception: " << str << endl;
+  }
+
+  size_t n = p.nvar;
 
   fpars A;
   for (int i = 0; i < n; ++i) A.a[i] = 1.0;
   
   p.fun = &f;
   p.funPars = &A;
-
-  p.vflag = 1;
-  p.out_fn = "test";
-  p.noise = 1.0;
-
-  char str[100];
-  for (int i = 0; i < n; ++i) {
-    sprintf(str,"X%d",i);
-    cout << str << endl;
-    p.varName[i] = str;
-    p.varLo[i] = -5.0;
-    p.varHi[i] = 5.0;
-  }
-
-  p.gelmanEvals = 100;
-  p.maxEvals = 30000;
-  p.burnIn = 5000;
 
   rng::GSLStream rng;
   rng.alloc();
