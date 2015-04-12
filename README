@@ -1,0 +1,11 @@
+
+C/C++ implementation of the DREAM algorithm
+===========================================
+
+(c) 2015 Gabriel E Leventhal
+
+Original citation:
+
+Accelerating Markov Chain Monte Carlo Simulation by Differential Evolution with Self-Adaptive Randomized Subspace Sampling
+Jasper A. Vrugt, C.J.F. ter Braak, C.G.H. Diks, Bruce A. Robinson, James M. Hyman, Dave Higdon
+
