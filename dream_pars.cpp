@@ -81,9 +81,17 @@ void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
         throw "Locked variable isn't a double.";
       } else {
         p->varLock[i] = 1;
-        p->varLo[i] = p->varHi[i] = m1->value.GetDouble();
+        p->varHi[i] = m1->value.GetDouble();
+        p->varLo[i] = p->varHi[i];
+        p->varInit[i] = p->varHi[i];
         --(p->nfree);
       }
+    }
+
+    m1 = d[i].FindMember("init");
+    if (m1 != d[i].MemberEnd()) {
+      if (! m1->value.IsDouble()) throw "Bad initial value.";
+      p->varInit[i] = m1->value.GetDouble();
     }
 
     m1 = d[i].FindMember("scale");
