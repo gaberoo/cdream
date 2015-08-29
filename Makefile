@@ -1,6 +1,9 @@
 CC = gcc
 CPP = g++
 
+#CC = clang
+#CPP = clang++
+
 CFLAGS = -m64 -O3 -Iinclude
 CPPFLAGS = $(CFLAGS)
 
