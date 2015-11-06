@@ -17,7 +17,10 @@ using namespace std;
 #include <rng/RngStream.h>
 #include "array.h"
 
-typedef double (*LikFun)(const double* state, const void* pars);
+typedef double (*LikFun)(int chain_id, int gen, 
+                         const double* state, const void* pars);
+typedef double (*ReportFun)(int chain_id, const double* state, 
+                            double lik, const void* pars);
 
 typedef struct t_dream_pars {
   int vflag;                 /* vebose flag */

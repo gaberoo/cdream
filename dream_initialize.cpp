@@ -56,7 +56,7 @@ void dream_initialize(
     }
     if (do_calc) {
       if (p->vflag) cout << "Chain " << i << " likelihood = " << flush;
-      lik[i] = p->fun(state.col_pt(i),p->funPars);
+      lik[i] = p->fun(i,-1,state.col_pt(i),p->funPars);
       if (p->vflag) cout << lik[i] << endl;
     } else lik[i] = -INFINITY;
   }
@@ -77,7 +77,7 @@ void dream_initialize(
         state(i,j) = randPos;
       }
       // if (fixedRatio >= 0.0) state(0,i,1) = state(0,i,2)*(1./fixedRatio-1.);
-      lik[i] = p->fun(state.col_pt(i),p->funPars);
+      lik[i] = p->fun(i,-1,state.col_pt(i),p->funPars);
       cerr << "New likelihood = " << lik[i] << endl;
     }
   }

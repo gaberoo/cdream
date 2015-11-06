@@ -269,14 +269,14 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
               }
             }
           }
-          if (p->recalcLik) lik(t-1,i) = p->fun(state.pt(t-1,i),p->funPars);
+          if (p->recalcLik) lik(t-1,i) = p->fun(i,-1,state.pt(t-1,i),p->funPars);
           if (do_calc) {
-            lik(t,i) = p->fun(proposal(i),p->funPars);
+            lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
             // if (p->vflag) cout << ". Likelihood = " << lik(t,i) << endl;
           } else lik(t,i) = -INFINITY;
         } else {
           for (int j = 0; j < p->nvar; ++j) proposal(i,j) = state(t-1,i,j);
-          if (p->recalcLik) lik(t,i) = p->fun(proposal(i),p->funPars);
+          if (p->recalcLik) lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
           else lik(t,i) = lik(t-1,i);
         }
       }
@@ -409,7 +409,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
           for (int j = 0; j < p->nvar; ++j) *oout[i] << state(t,i,j) << " ";
           *oout[i] << lik(t,i) << " " << (t < burnInStart+p->burnIn) << " " << genNumber << " ";
           for (int j(0); j < p->nCR; ++j) *oout[i] << pCR[j] << " ";
-          *oout[i] << endl;
+          *oout[i] << acceptStep[i] << endl;
         }
       }
     }
