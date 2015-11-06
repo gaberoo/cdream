@@ -269,21 +269,26 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
               }
             }
           }
-          if (p->recalcLik) lik(t-1,i) = p->fun(i,-1,state.pt(t-1,i),p->funPars);
+          if (p->recalcLik) {
+            lik(t-1,i) = p->fun(i,-1,state.pt(t-1,i),p->funPars);
+          }
           if (do_calc) {
             lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
             // if (p->vflag) cout << ". Likelihood = " << lik(t,i) << endl;
           } else lik(t,i) = -INFINITY;
         } else {
           for (int j = 0; j < p->nvar; ++j) proposal(i,j) = state(t-1,i,j);
-          if (p->recalcLik) lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
-          else lik(t,i) = lik(t-1,i);
+          if (p->recalcLik) {
+            lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
+          } else {
+            lik(t,i) = lik(t-1,i);
+          }
         }
       }
 
       for (int i = 0; i < p->numChains; ++i) {
-        if (lik(t,i) >= lik(t-1,i)) acceptStep[i] = 1;
-        else if (lik(t,i) == -INFINITY) acceptStep[i] = 0;
+        if (lik(t,i) == -INFINITY) acceptStep[i] = 0;
+        else if (lik(t,i) >= lik(t-1,i)) acceptStep[i] = 1;
         else {
           rng->uniform(1,&drand);
           if (log(drand) < lik(t,i)-lik(t-1,i)) acceptStep[i] = 1;
