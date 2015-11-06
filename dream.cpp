@@ -270,7 +270,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
             }
           }
           if (p->recalcLik) {
-            lik(t-1,i) = p->fun(i,-1,state.pt(t-1,i),p->funPars);
+            lik(t-1,i) = p->fun(i,t-1,state.pt(t-1,i),p->funPars);
           }
           if (do_calc) {
             lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
