@@ -1,4 +1,5 @@
+*~
 *.o
-dream.a
+libdream.a
 test.*.txt
 test_dream

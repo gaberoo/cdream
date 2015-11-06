@@ -10,14 +10,14 @@ OBJ = check_outliers.o gelman_rubin.o gen_CR.o \
 			restore_state.o dream_initialize.o dream.o \
 			dream_pars.o
 
-dream.a: $(OBJ)
-	ar rcs dream.a $(OBJ)
+libdream.a: $(OBJ)
+	ar rcs libdream.a $(OBJ)
 
 clean:
-	rm -rf dream.a
+	rm -rf libdream.a
 	rm -rf $(OBJ)
 
-test_dream: test_dream.cpp dream.a
+test_dream: test_dream.cpp libdream.a
 	$(CPP) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 ##############################################################################

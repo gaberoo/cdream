@@ -54,6 +54,7 @@ public:
   inline void set_all(const T& val) { for (size_t i(0); i < nx*ny; ++i) data[i] = val; }
   inline size_t n_x() const { return nx; }
   inline size_t n_y() const { return ny; }
+  inline size_t size() const { return nx*ny; }
 };
 
 template<typename T>
@@ -69,7 +70,7 @@ public:
   }
   virtual ~Array3D() { free(data); }
   inline T* pt() { return data; }
-  inline T* pt(size_t x, size_t y, size_t z) { return data + (x*ny*nz + y*nz + z); }
+  inline T* pt(size_t x, size_t y, size_t z = 0) { return data + (x*ny*nz + y*nz + z); }
   inline T& operator()(size_t x, size_t y, size_t z) { return data[x*ny*nz + y*nz + z]; }
   inline void set_all(const T& val) { for (size_t i(0); i < nx*ny*nz; ++i) data[i] = val; }
   inline size_t n_x() const { return nx; }

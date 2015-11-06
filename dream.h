@@ -29,6 +29,7 @@ typedef struct t_dream_pars {
   int report_interval;       /* report interval for state */
   int diagnostics;           /* report diagnostics at the end of the run */
   int burnIn;                /* number of steps for which to run an adaptive proposal size */
+  int recalcLik;             /* recalculate likelihood of previously evaluated states */
 
   // DREAM variables
   int collapseOutliers;

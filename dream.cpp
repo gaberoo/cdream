@@ -84,7 +84,9 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
     Array2D<double> lik(p->maxEvals+1,p->numChains);
 
     Array2D<double> proposal(p->numChains,p->nvar);
+    Array2D<double> proposal_two(p->numChains,p->nvar);
     proposal.set_all(0.0);
+    proposal_two.set_all(0.0);
 
     vector<double> scaleReduction(p->nvar,0.0);
     vector<double> pCR(p->nCR,1./p->nCR);
@@ -265,13 +267,15 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
               }
             }
           }
+          if (p->recalcLik) lik(t-1,i) = p->fun(state.pt(t-1,i),p->funPars);
           if (do_calc) {
             lik(t,i) = p->fun(proposal(i),p->funPars);
             // if (p->vflag) cout << ". Likelihood = " << lik(t,i) << endl;
           } else lik(t,i) = -INFINITY;
         } else {
           for (int j = 0; j < p->nvar; ++j) proposal(i,j) = state(t-1,i,j);
-          lik(t,i) = lik(t-1,i);
+          if (p->recalcLik) lik(t,i) = p->fun(proposal(i),p->funPars);
+          else lik(t,i) = lik(t-1,i);
         }
       }
 

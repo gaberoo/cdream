@@ -11,6 +11,7 @@ void dream_pars_default(dream_pars* p) {
   p->report_interval = 1;
   p->diagnostics = 0;
   p->burnIn = 0;
+  p->recalcLik = 0;
   p->noise = 0.05;
   p->bstar_zero = 1e-3;
   p->collapseOutliers = 1;
@@ -132,6 +133,12 @@ void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
   if (m1 != dv.MemberEnd()) {
     if (! m1->value.IsInt()) throw "burn_in";
     p->burnIn = m1->value.GetInt();
+  }
+
+  m1 = dv.FindMember("recalc_lik");
+  if (m1 != dv.MemberEnd()) {
+    if (! m1->value.IsInt()) throw "recalc_lik";
+    p->recalcLik = m1->value.GetInt();
   }
 
   m1 = dv.FindMember("gelman_evals");
