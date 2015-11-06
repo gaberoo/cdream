@@ -46,7 +46,9 @@ using namespace std;
 #include <rapidjson/document.h>
 #include <rng/RngStream.h>
 
+#if defined(_OPENMP)
 #include <omp.h>
+#endif
 
 #ifdef USE_MPI
 #include "mpi.h"
