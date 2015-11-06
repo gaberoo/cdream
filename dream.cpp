@@ -134,7 +134,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
         for (int j = 0; j < p->nvar; ++j) *oout[i] << state(0,i,j) << " ";
         *oout[i]  << lik(0,i) << " " << inBurnIn << " " << 0 << " ";
         for (int j = 0; j < p->nCR; ++j) *oout[i] << pCR[j] << " ";
-        *oout[i] << endl;
+        *oout[i] << 1 << endl;
       }
     }
 
