@@ -2,6 +2,7 @@
 #define __DREAM_H__
 
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <map>
