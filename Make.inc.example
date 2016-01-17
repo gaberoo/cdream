@@ -1,0 +1,8 @@
+CC=gcc-5
+CPP=g++-5
+
+#CC = clang
+#CPP = clang++
+
+CFLAGS = -m64 -O3
+

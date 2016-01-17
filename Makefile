@@ -1,10 +1,6 @@
-CC = gcc
-CPP = g++
+include Make.inc
 
-#CC = clang
-#CPP = clang++
-
-CFLAGS = -m64 -O3 -Iinclude
+CFLAGS += -Iinclude
 CPPFLAGS = $(CFLAGS)
 
 LDFLAGS = -lgsl

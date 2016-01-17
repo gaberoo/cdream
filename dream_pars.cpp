@@ -71,7 +71,7 @@ void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
     m1 = d[i].FindMember("limits"); 
     if (m1 != d[i].MemberEnd()) {
       if (! m1->value.IsArray()) throw "Bad variables limits.";
-      if (! m1->value.Size() == 2) throw "Bad variables limits.";
+      if (m1->value.Size() != 2) throw "Bad variables limits.";
       _rj = 0; p->varLo[i] = m1->value[_rj].GetDouble();
       _rj = 1; p->varHi[i] = m1->value[_rj].GetDouble();
     }

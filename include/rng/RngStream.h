@@ -35,8 +35,8 @@ namespace rng {
       int discrete_x(size_t n, const double* w) {
         double r;
         uniform(1,&r,0,w[n]);
-        size_t j = r/w[n]*n;
-        while (j >= 0 && j < n) {
+        int j = r/w[n]*n;
+        while (j >= 0 && j < (int) n) {
           if (r < w[j]) --j;
           else if (r >= w[j+1]) ++j;
           else break;
