@@ -1,5 +1,5 @@
-CC=gcc-5
-CPP=g++-5
+CC=gcc
+CPP=g++
 
 #CC = clang
 #CPP = clang++
