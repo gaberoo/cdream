@@ -24,6 +24,7 @@ void dream_pars_default(dream_pars* p) {
   p->reenterBurnin = 0.2;
   p->fun = NULL;
   p->funPars = NULL;
+  p->rfun = NULL;
 }
 
 // ---------------------------------------------------------------------------

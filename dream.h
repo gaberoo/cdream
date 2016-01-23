@@ -19,8 +19,9 @@ using namespace std;
 
 typedef double (*LikFun)(int chain_id, int gen, 
                          const double* state, const void* pars);
-typedef double (*ReportFun)(int chain_id, const double* state, 
-                            double lik, const void* pars);
+typedef void (*ReportFun)(int gen, int chain_id, int n, 
+                          const double* state, double lik, 
+                          int burnIn, const void* pars);
 
 typedef struct t_dream_pars {
   int vflag;                 /* vebose flag */
@@ -59,6 +60,7 @@ typedef struct t_dream_pars {
 
   LikFun fun;
   void* funPars;
+  ReportFun rfun;
 } dream_pars;
 
 void dream_pars_default(dream_pars* p);

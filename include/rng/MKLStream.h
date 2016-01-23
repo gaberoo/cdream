@@ -42,13 +42,17 @@ namespace rng {
         viRngUniform(VSL_RNG_METHOD_UNIFORM_STD,stream,n,r,a,b);
       }
 
+      inline void poisson(size_t n, int* k, double lambda) {
+        viRngPoisson(VSL_RNG_METHOD_POISSON_PTPE,stream,n,k,lambda);
+      }
+
       inline void set_type(const MKL_INT type) { brng = type; }
 
       inline void shuffle(int* x, size_t n) {
         std::cerr << "Int shuffling not implemented!" << std::endl;
       }
 
-      inline void shuffle(double* x, size_t n) = 0; {
+      inline void shuffle(double* x, size_t n) {
         std::cerr << "Double shuffling not implemented!" << std::endl;
       }
 

@@ -16,7 +16,9 @@ void dream_initialize(
   Array2D<int> samples(p->nvar,p->numChains);
   samples.set_all(0);
 
-  if (p->vflag) cerr << "  shuffling..." << flush;
+  if (p->vflag) {
+    cerr << "  shuffling...(" << p->nvar << "," << p->numChains << ")" << flush;
+  }
   for (int j = 0; j < p->nvar; ++j) {
     for (int i = 0; i < p->numChains; ++i) samples(j,i) = i;
     rng->shuffle(samples(j),p->numChains);

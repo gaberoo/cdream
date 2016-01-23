@@ -131,10 +131,14 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
 
       // save initial state of each chain
       for (int i = 0; i < p->numChains; ++i) {
-        for (int j = 0; j < p->nvar; ++j) *oout[i] << state(0,i,j) << " ";
-        *oout[i]  << lik(0,i) << " " << inBurnIn << " " << 0 << " ";
-        for (int j = 0; j < p->nCR; ++j) *oout[i] << pCR[j] << " ";
-        *oout[i] << 1 << endl;
+        if (p->rfun != NULL) {
+          p->rfun(0,i,p->nvar,&state(0,i,0),lik(0,i),inBurnIn,&p);
+        } else {
+          for (int j = 0; j < p->nvar; ++j) *oout[i] << state(0,i,j) << " ";
+          *oout[i]  << lik(0,i) << " " << inBurnIn << " " << 0 << " ";
+          for (int j = 0; j < p->nCR; ++j) *oout[i] << pCR[j] << " ";
+          *oout[i] << 1 << endl;
+        }
       }
     }
 
@@ -411,10 +415,14 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
       if (ireport >= p->report_interval) {
         ireport = 0;
         for (int i = 0; i < p->numChains; ++i) {
-          for (int j = 0; j < p->nvar; ++j) *oout[i] << state(t,i,j) << " ";
-          *oout[i] << lik(t,i) << " " << (t < burnInStart+p->burnIn) << " " << genNumber << " ";
-          for (int j(0); j < p->nCR; ++j) *oout[i] << pCR[j] << " ";
-          *oout[i] << acceptStep[i] << endl;
+          if (p->rfun != NULL) {
+            p->rfun(t,i,p->nvar,&state(t,i,0),lik(t,i),inBurnIn,&p);
+          } else {
+            for (int j = 0; j < p->nvar; ++j) *oout[i] << state(t,i,j) << " ";
+            *oout[i] << lik(t,i) << " " << (t < burnInStart+p->burnIn) << " " << genNumber << " ";
+            for (int j(0); j < p->nCR; ++j) *oout[i] << pCR[j] << " ";
+            *oout[i] << acceptStep[i] << endl;
+          }
         }
       }
     }

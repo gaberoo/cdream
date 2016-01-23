@@ -49,6 +49,9 @@ namespace rng {
         *r = gsl_ran_gaussian(rng,sigma) + mu;
       };
 
+      inline void poisson(size_t n, int* k, double lambda) {
+        *k = gsl_ran_poisson(rng,lambda);
+      }
 
     protected:
       const gsl_rng_type* type;

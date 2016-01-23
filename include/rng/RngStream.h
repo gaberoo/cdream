@@ -7,9 +7,12 @@
 
 namespace rng {
   inline void make_discrete(size_t n, const double* w, double* x) {
-    x[0] = 0.0;
-    for (size_t i = 1; i < n; ++i) x[i] = x[i-1] + w[i-1];
-    x[n] = x[n-1]+w[n-1];
+    x[0] = w[0];
+    for (size_t i = 1; i < n; ++i) x[i] = x[i-1] + w[i];
+  }
+  
+  inline double dprob(size_t i, const double* w) {
+    return w[i] - ((i>0) ? w[i-1] : 0);
   }
 
   class RngStream {
@@ -23,26 +26,37 @@ namespace rng {
 
       virtual void uniform(size_t n, double* r, double a = 0.0, double b = 1.0) = 0;
       virtual void uniform_int(size_t n, int* r, int a = 0, int b = 100) = 0;
+      virtual void poisson(size_t n, int* k, double lambda) = 0;
 
       int discrete(size_t n, const double* w) {
         double* w0 = new double[n+1];
         make_discrete(n,w,w0);
-        size_t j = discrete_x(n,w0);
+        int j = discrete_x(n,w0);
         delete[] w0;
         return j;
       }
 
-      int discrete_x(size_t n, const double* w) {
+      inline int pick(const double* x, size_t n) {
+        if (x[n-1] <= 0.0) return -1;
         double r;
-        uniform(1,&r,0,w[n]);
-        int j = r/w[n]*n;
-        while (j >= 0 && j < (int) n) {
-          if (r < w[j]) --j;
-          else if (r >= w[j+1]) ++j;
-          else break;
+        uniform(1,&r,0,x[n-1]);
+        int i = (int) (r/x[n-1]*n);
+        if (i < 0) {
+          std::cerr << "RngStream::pick : "
+                    << r << " " << x[n-1] << " " << n << std::endl;
+          return -1;
         }
-        return j;
+        if (r > x[i]) {
+          while (r > x[i] && i < n) ++i;
+        } else {
+          while (i > 0) {
+            if (r > x[i-1]) break;
+            --i;
+          }
+        }
+        return i;
       }
+      inline int discrete_x(size_t n, const double* w) { return pick(w,n); }
 
       virtual void multinomial(size_t k, size_t n, const double* p, unsigned* a) = 0;
       virtual void gaussian(size_t n, double* r, double mu, double sigma) = 0;
