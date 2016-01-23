@@ -274,16 +274,16 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
             }
           }
           if (p->recalcLik) {
-            lik(t-1,i) = p->fun(i,t-1,state.pt(t-1,i),p->funPars);
+            lik(t-1,i) = p->fun(i,t-1,state.pt(t-1,i),p->funPars,true);
           }
           if (do_calc) {
-            lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
+            lik(t,i) = p->fun(i,t,proposal(i),p->funPars,false);
             // if (p->vflag) cout << ". Likelihood = " << lik(t,i) << endl;
           } else lik(t,i) = -INFINITY;
         } else {
           for (int j = 0; j < p->nvar; ++j) proposal(i,j) = state(t-1,i,j);
           if (p->recalcLik) {
-            lik(t,i) = p->fun(i,t,proposal(i),p->funPars);
+            lik(t,i) = p->fun(i,t,proposal(i),p->funPars,true);
           } else {
             lik(t,i) = lik(t-1,i);
           }

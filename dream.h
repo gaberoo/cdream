@@ -17,8 +17,8 @@ using namespace std;
 #include <rng/RngStream.h>
 #include "array.h"
 
-typedef double (*LikFun)(int chain_id, int gen, 
-                         const double* state, const void* pars);
+typedef double (*LikFun)(int chain_id, int gen, const double* state, 
+                         const void* pars, bool recalc);
 typedef void (*ReportFun)(int gen, int chain_id, int n, 
                           const double* state, double lik, 
                           int burnIn, const void* pars);
