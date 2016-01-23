@@ -168,7 +168,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
  
     // ======================================================================
     // RUN MCMC
-    
+
     vector<unsigned> L(p->nCR,0);      // candidates for crossover
     vector<unsigned> totalSteps(p->nCR,0);
     Array2D<int> CRm(p->numChains,p->loopSteps);
@@ -180,6 +180,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
     double pCR_sum(0.0);
 
     for (int t = prevLines+1; t < p->maxEvals; ++t) {
+
       // beginning of loop, generate crossover probabilities
       if (genNumber == 0) { 
         gen_CR(rng,pCR,CRm,L); 

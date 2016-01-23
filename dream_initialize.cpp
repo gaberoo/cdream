@@ -17,7 +17,7 @@ void dream_initialize(
   samples.set_all(0);
 
   if (p->vflag) {
-    cerr << "  shuffling...(" << p->nvar << "," << p->numChains << ")" << flush;
+    cerr << "  shuffling (" << p->nvar << "," << p->numChains << ")..." << flush;
   }
   for (int j = 0; j < p->nvar; ++j) {
     for (int i = 0; i < p->numChains; ++i) samples(j,i) = i;
@@ -41,7 +41,7 @@ void dream_initialize(
       if (randPos < p->varLo[j]) randPos = p->varLo[j];
       else if (randPos > p->varHi[j]) randPos = p->varHi[j];
       state(i,j) = randPos;
-      if (p->vflag) fprintf(stderr,"(%d,%d) = %f\n",i,j,state(i,j));
+      if (p->vflag > 1) fprintf(stderr,"(%d,%d) = %f\n",i,j,state(i,j));
     }
   }
 
@@ -58,7 +58,7 @@ void dream_initialize(
     }
     if (do_calc) {
       if (p->vflag) cout << "Chain " << i << " likelihood = " << flush;
-      lik[i] = p->fun(i,-1,state.col_pt(i),p->funPars);
+      lik[i] = p->fun(i,-1,state.col_pt(i),p->funPars,false);
       if (p->vflag) cout << lik[i] << endl;
     } else lik[i] = -INFINITY;
   }
@@ -79,7 +79,7 @@ void dream_initialize(
         state(i,j) = randPos;
       }
       // if (fixedRatio >= 0.0) state(0,i,1) = state(0,i,2)*(1./fixedRatio-1.);
-      lik[i] = p->fun(i,-1,state.col_pt(i),p->funPars);
+      lik[i] = p->fun(i,-1,state.col_pt(i),p->funPars,false);
       cerr << "New likelihood = " << lik[i] << endl;
     }
   }
