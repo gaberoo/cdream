@@ -102,20 +102,23 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
     // open output file
 
     ostringstream chain_fn;
-    vector<ostream*> oout(p->numChains,&cout);
+    vector<ostream*> oout;
     ios_base::openmode fmode = (p->appendFile) ? (ios_base::out | ios_base::app) : ios_base::out;
 
-    if (p->out_fn != "" && p->out_fn != "-") {
-      for (int i = 0; i < p->numChains; ++i) {
-        cerr << "opening output file " << i << "...";
+    if (p->rfun == NULL) {
+      oout.resize(p->numChains,&cout);
+      if (p->out_fn != "" && p->out_fn != "-") {
+        for (int i = 0; i < p->numChains; ++i) {
+          cerr << "opening output file " << i << "...";
 
-        chain_fn.str("");
-        chain_fn << p->out_fn << "." << i << ".txt";
-        oout[i] = new ofstream(chain_fn.str().c_str(),fmode);
-        oout[i]->setf(ios::scientific,ios::floatfield);
-        oout[i]->precision(12);
-        cerr << "done." << endl;
-        if (p->appendFile) *oout[i] << "# --- Resuming DREAM ---" << endl;
+          chain_fn.str("");
+          chain_fn << p->out_fn << "." << i << ".txt";
+          oout[i] = new ofstream(chain_fn.str().c_str(),fmode);
+          oout[i]->setf(ios::scientific,ios::floatfield);
+          oout[i]->precision(12);
+          cerr << "done." << endl;
+          if (p->appendFile) *oout[i] << "# --- Resuming DREAM ---" << endl;
+        }
       }
     }
  
@@ -274,7 +277,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
               }
             }
           }
-          if (p->recalcLik) {
+          if (p->recalcLik + inBurnIn > 0) {
             lik(t-1,i) = p->fun(i,t-1,state.pt(t-1,i),p->funPars,true);
           }
           if (do_calc) {
@@ -283,7 +286,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
           } else lik(t,i) = -INFINITY;
         } else {
           for (int j = 0; j < p->nvar; ++j) proposal(i,j) = state(t-1,i,j);
-          if (p->recalcLik) {
+          if (p->recalcLik + inBurnIn > 0) {
             lik(t,i) = p->fun(i,t,proposal(i),p->funPars,true);
           } else {
             lik(t,i) = lik(t-1,i);
@@ -299,9 +302,11 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
           if (log(drand) < lik(t,i)-lik(t-1,i)) acceptStep[i] = 1;
           else acceptStep[i] = 0;
         }
-//        if (p->vflag) {
-//          cout << t << " " << lik(t-1,i) << " <- " << acceptStep[i] << " -> " << lik(t,i) << endl;
-//        }
+        if (p->vflag) {
+          cout << t << " " << lik(t-1,i) 
+               << " <- " << acceptStep[i] << "|" << updateDim[i]
+               << " -> " << lik(t,i) << endl;
+        }
         if (acceptStep[i]) {
           ++numAccepted;
           for (int j = 0; j < p->nvar; ++j) state(t,i,j) = proposal(i,j);
@@ -428,8 +433,10 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
       }
     }
 
-    for (int i(0); i < p->numChains; ++i) {
-      if (oout[i] != NULL) delete oout[i];
+    if (p->rfun == NULL) {
+      for (int i(0); i < p->numChains; ++i) {
+        if (oout[i] != NULL) delete oout[i];
+      }
     }
   } else {
     // MPI slaves
