@@ -302,7 +302,7 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
           if (log(drand) < lik(t,i)-lik(t-1,i)) acceptStep[i] = 1;
           else acceptStep[i] = 0;
         }
-        if (p->vflag) {
+        if (p->vflag > 1) {
           cout << t << " " << lik(t-1,i) 
                << " <- " << acceptStep[i] << "|" << updateDim[i]
                << " -> " << lik(t,i) << endl;
