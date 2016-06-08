@@ -188,6 +188,36 @@ void dream_pars_from_json(dream_pars* p, rapidjson::Value& jpars) {
 
 // ---------------------------------------------------------------------------
 
+int json_get_int(rapidjson::Value& v, string name) {
+  rapidjson::Value::MemberIterator it;
+  it = v.FindMember(name.c_str());
+  if (it != v.MemberEnd()) {
+    if (! it->value.IsInt()) throw name.c_str();
+    return it->value.GetInt();
+  }
+  return 0;
+}
+
+double json_get_double(rapidjson::Value& v, string name) {
+  rapidjson::Value::MemberIterator it;
+  it = v.FindMember(name.c_str());
+  if (it != v.MemberEnd()) {
+    if (! it->value.IsDouble()) throw name.c_str();
+    return it->value.GetDouble();
+  }
+  return 0;
+}
+
+string json_get_string(rapidjson::Value& v, const char* name) {
+  rapidjson::Value::MemberIterator it;
+  it = v.FindMember(name);
+  if (it != v.MemberEnd()) {
+    if (! it->value.IsString()) throw name;
+    return it->value.GetString();
+  }
+  return 0;
+}
+
 void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
   // reading priors from JSON
   rapidjson::Value::MemberIterator m1;
@@ -198,53 +228,15 @@ void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
 
   rapidjson::Value& dv = dream->value;
 
-  m1 = dv.FindMember("prefix");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsString()) throw "prefix";
-    p->out_fn = m1->value.GetString();
-  }
-
-  m1 = dv.FindMember("num_chains");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsInt()) throw "num_chains";
-    p->numChains = m1->value.GetInt();
-  }
-
-  m1 = dv.FindMember("max_evals");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsInt()) throw "max_evals";
-    p->maxEvals = m1->value.GetInt();
-  }
-
-  m1 = dv.FindMember("burn_in");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsInt()) throw "burn_in";
-    p->burnIn = m1->value.GetInt();
-  }
-
-  m1 = dv.FindMember("recalc_lik");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsInt()) throw "recalc_lik";
-    p->recalcLik = m1->value.GetInt();
-  }
-
-  m1 = dv.FindMember("gelman_evals");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsInt()) throw "gelman_evals";
-    p->gelmanEvals = m1->value.GetInt();
-  }
-
-  m1 = dv.FindMember("vflag");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsInt()) throw "vflag";
-    p->vflag = m1->value.GetInt();
-  }
-
-  m1 = dv.FindMember("noise");
-  if (m1 != dv.MemberEnd()) {
-    if (! m1->value.IsDouble()) throw "noise";
-    p->noise = m1->value.GetDouble();
-  }
+  p->out_fn           = json_get_string (dv,"prefix");
+  p->numChains        = json_get_int    (dv,"num_chains");
+  p->maxEvals         = json_get_int    (dv,"max_evals");
+  p->burnIn           = json_get_int    (dv,"burn_in");
+  p->recalcLik        = json_get_int    (dv,"recalc_lik");
+  p->gelmanEvals      = json_get_int    (dv,"gelman_evals");
+  p->vflag            = json_get_int    (dv,"vflag");
+  p->noise            = json_get_double (dv,"noise");
+  p->collapseOutliers = json_get_int    (dv,"outliers");
 }
 
 // ---------------------------------------------------------------------------

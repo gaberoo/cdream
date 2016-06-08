@@ -78,6 +78,8 @@ int dream(const dream_pars* p, rng::RngStream* rng) {
       if (p->varLock[i]) cerr << " *";
       cerr << endl;
     }
+
+    cerr << "Collapse outliers: " << p->collapseOutliers << endl;
   }
 
   if (mpi_rank == 0) {
