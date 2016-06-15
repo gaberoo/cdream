@@ -1,8 +1,4 @@
-#CC=gcc
 #CPP=g++
-
-CC = clang
 CPP = clang++
 
-CFLAGS = -g -m64 -O3
 

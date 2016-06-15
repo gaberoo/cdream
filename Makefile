@@ -1,29 +1,32 @@
 include Make.inc
 
-CFLAGS += -Iinclude
-CPPFLAGS = $(CFLAGS)
+CPPFLAGS += -std=c++14 -g -m64 -O3
+CPPFLAGS += -Iinclude
 
 LDFLAGS = -lgsl
 
-OBJ = check_outliers.o gelman_rubin.o gen_CR.o \
-			restore_state.o dream_initialize.o dream.o \
-			dream_pars.o
+SRC = $(wildcard *.cpp)
 
-libdream.a: $(OBJ)
+OBJ = $(SRC:%.cpp=build/%.o)
+
+all: build/libdream.a
+
+build/libdream.a: $(OBJ)
+	@mkdir -p build
 	ar rcs libdream.a $(OBJ)
 
 clean:
-	rm -rf libdream.a
-	rm -rf $(OBJ)
+	rm -rf build
 
 test_dream: test_dream.cpp libdream.a
 	$(CPP) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 ##############################################################################
 
-.c.o: $<
-	$(CC) $(CFLAGS) -c $<
-
 .cpp.o: $<
 	$(CPP) $(CPPFLAGS) -c $<
+
+build/%.o: %.cpp
+	@mkdir -p build
+	$(CPP) $(CPPFLAGS) -o $@ -c $<
 
