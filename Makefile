@@ -13,12 +13,12 @@ all: build/libdream.a
 
 build/libdream.a: $(OBJ)
 	@mkdir -p build
-	ar rcs libdream.a $(OBJ)
+	ar rcs build/libdream.a $(OBJ)
 
 clean:
 	rm -rf build
 
-test_dream: test_dream.cpp libdream.a
+build/test_dream: tests/test_dream.cpp build/libdream.a
 	$(CPP) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 ##############################################################################

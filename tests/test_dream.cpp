@@ -12,7 +12,7 @@ typedef struct {
   double a[10];
 } fpars;
 
-double f(const double* state, const void* pars) {
+double f(int chain, int gen, const double* state, const void* pars, bool recalc) {
   fpars& p = *(fpars*) pars;
   double ll = 0.0;
   for (int i = 0; i < 10; ++i) ll -= p.a[i]*state[i]*state[i];
@@ -20,7 +20,7 @@ double f(const double* state, const void* pars) {
 }
 
 int main() {
-  ifstream in("test.json");
+  ifstream in("tests/test.json");
   string json_input;
   in.seekg(0,ios::end);
   json_input.reserve(in.tellg());
@@ -57,6 +57,7 @@ int main() {
   dream(&p,&rng);
 
   dream_pars_free_vars(&p);
+
   return 0;
 }
 
