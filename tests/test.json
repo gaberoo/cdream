@@ -4,6 +4,7 @@
     { "name": "X2", "limits": [-2.0,2.0] },
     { "name": "X3", "lock": 0.0 }
   ],
+  "shifts": [],
   "dream": {
     "prefix": "test",
     "num_chains": 5,

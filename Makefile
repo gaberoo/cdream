@@ -1,9 +1,9 @@
 include Make.inc
 
 CPPFLAGS += -std=c++14 -g -m64 -O3
-CPPFLAGS += -Iinclude
+CPPFLAGS += -Iinclude -I.
 
-LDFLAGS = -lgsl
+LDFLAGS += -lgsl
 
 SRC = $(wildcard *.cpp)
 

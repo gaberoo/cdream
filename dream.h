@@ -65,7 +65,7 @@ typedef struct t_dream_pars {
 
 void dream_pars_default(dream_pars* p);
 void dream_pars_init_vars(dream_pars* p, size_t n);
-void dream_pars_free_vars(dream_pars* p);
+int  dream_pars_free_vars(dream_pars* p);
 
 size_t dream_par_by_name(const dream_pars* p, string name);
 

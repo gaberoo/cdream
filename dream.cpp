@@ -1,27 +1,26 @@
-// ===========================================================================
-//
-// DREAM 
-// -----
-//
-// Gabriel E Leventhal
-// Institute of Integrative Biology
-// ETH Zurich
-// Universitätstrasse 16
-// 8092 Zürich
-// Switzerland
-//
-// gabriel.leventhal@env.ethz.ch
-// http://www.leventhal.ch
-//
-// DREAM algorithm:
-//
-// Vrugt, J. A., ter Braak, C. J. F., Diks, C. G. H., Robinson, B. A., Hyman, 
-// J. M., Higdon, D., 2009. Accelerating Markov chain Monte Carlo simulation 
-// by differential evolution with self-adaptive randomized subspace sampling. 
-// International Journal of Nonlinear Sciences and Numerical Simulation 
-// 10 (3), 273-290. DOI: 10.1515/IJNSNS.2009.10.3.273
-//
-// ===========================================================================
+/* 
+ * ===========================================================================
+ * DREAM 
+ * ===========================================================================
+ *
+ * Gabriel E Leventhal
+ *   gabriel@leventhal.ch
+ *   http://www.leventhal.ch
+ *
+ * ===========================================================================
+ *
+ * DREAM algorithm:
+ *
+ * Vrugt, J. A., ter Braak, C. J. F., Diks, C. G. H., Robinson, B. A., Hyman, 
+ * J. M., Higdon, D., 2009. Accelerating Markov chain Monte Carlo simulation 
+ * by differential evolution with self-adaptive randomized subspace sampling. 
+ * International Journal of Nonlinear Sciences and Numerical Simulation 
+ * 10 (3), 273-290. 
+ *
+ * doi: 10.1515/IJNSNS.2009.10.3.273
+ *
+ * ===========================================================================
+*/
 
 #include <cstdlib>
 #include <cmath>

@@ -32,25 +32,26 @@ void dream_pars_default(dream_pars* p) {
 void dream_pars_init_vars(dream_pars* p, size_t n) {
   p->nvar = n;
   p->nfree = n;
-  p->varLo = (double*) calloc(n,sizeof(double));
-  p->varHi = (double*) calloc(n,sizeof(double));
+  p->varLo   = (double*) calloc(n,sizeof(double));
+  p->varHi   = (double*) calloc(n,sizeof(double));
   p->varInit = (double*) calloc(n,sizeof(double));
   p->varLock = (int*) calloc(n,sizeof(int));
-  p->varName = new string[n];
-  p->scale = new char[n];
+  p->varName = (string*) malloc(n*sizeof(string));
+  p->scale   = (char*) malloc(n*sizeof(char));
 }
 
 // ---------------------------------------------------------------------------
 
-void dream_pars_free_vars(dream_pars* p) {
+int dream_pars_free_vars(dream_pars* p) {
   free(p->varLo);
   free(p->varHi);
   free(p->varInit);
   free(p->varLock);
-  delete[] p->varName;
-  delete[] p->scale;
+  free(p->varName);
+  free(p->scale);
   p->nvar = 0;
   p->nfree = 0;
+  return 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -217,6 +218,8 @@ string json_get_string(rapidjson::Value& v, const char* name) {
   }
   return 0;
 }
+
+// ---------------------------------------------------------------------------
 
 void dream_pars_read_json(dream_pars* p, rapidjson::Value& jpars) {
   // reading priors from JSON
